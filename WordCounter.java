@@ -11,26 +11,29 @@ public class WordCounter {
     public static int processText(StringBuffer text, String stopword) throws InvalidStopwordException, TooSmallText {
         int count = 0;
         boolean stopwordchecker = false;
-        Pattern regex = Pattern.compile("[a-zA-Z0-9']+");
+        Pattern regex = Pattern.compile("\\b[a-zA-Z0-9']+\\b");
 
         Matcher regexMatcher = regex.matcher(text);
         while (regexMatcher.find()) {
-            count++;
             // System.out.println("I just found the word: " + regexMatcher.group());
             String word = regexMatcher.group();
+            count++;
             if (stopword != null && word.equals(stopword)) {
                 stopwordchecker = true;
-                break; // stops counting now
+                if (count < 5){
+                    continue;
+                }else{
+                    break;
+                }
             }
         }
         // had to fix this up, always sends this exception if !stopwordchecker so need
         // to add the null
+        if (count < 5) {
+            throw new TooSmallText(count);
+        }
         if (!stopwordchecker && stopword != null) {
             throw new InvalidStopwordException(stopword);
-        }
-
-        if (count < 3) {
-            throw new TooSmallText(count);
         }
 
         return count;
@@ -59,8 +62,8 @@ public class WordCounter {
             System.out.println("didnt find");
         }
         // cant do null for some odd reason (says dead code)
-        if (stringBuffer.length() > 0){
-            stringBuffer.setLength(stringBuffer.length() - 1); //we get rid of the FINAL trailing space
+        if (stringBuffer.length() > 0) {
+            stringBuffer.setLength(stringBuffer.length() - 1); // we get rid of the FINAL trailing space
         }
         if (stringBuffer.length() == 0) {
             throw new EmptyFileException(pathString);
@@ -76,12 +79,13 @@ public class WordCounter {
             System.out.println("Invalid option, choose again");
             answer = question.nextLine();
         }
-        String stopword = (args.length > 1) ? args[1] : null; //fancy stuff learned from systems. Basically just another if else searching for if we already had an argument
-
+        String stopword = (args.length > 1) ? args[1] : null; // fancy stuff learned from systems. Basically just
+                                                              // another if else searching for if we already had an
+                                                              // argument
 
         if (answer.equals("1")) {
             String path = (args.length > 0) ? args[0] : null;
-            if (path == null || path.isEmpty()){
+            if (path == null || path.isEmpty()) {
                 System.out.println("enter path");
                 path = question.nextLine();
             }
@@ -94,15 +98,15 @@ public class WordCounter {
                 System.out.println(e);
                 text = new StringBuffer(); // continue with an empty one
             }
-            try{
+            try {
                 int count = WordCounter.processText(text, stopword);
                 System.out.println("Found " + count + " words.");
-            }catch (InvalidStopwordException e){
+            } catch (InvalidStopwordException e) {
                 System.out.println(e);
-            }catch(TooSmallText e){
+            } catch (TooSmallText e) {
                 System.out.println(e);
             }
-        }else{
+        } else {
             System.out.println("Enter text");
             StringBuffer text = new StringBuffer(question.nextLine());
 
