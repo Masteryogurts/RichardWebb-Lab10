@@ -1,0 +1,9 @@
+Option 1 for processing files. Option 2 for processing texts. Pick.
+Found 5 words.
+Option 1 for processing files. Option 2 for processing texts. Pick.
+Found 9 words.
+Option 1 for processing files. Option 2 for processing texts. Pick.
+EmptyFileException: file1.txt was empty
+TooSmallText: Only found 0 words.
+Option 1 for processing files. Option 2 for processing texts. Pick.
+TooSmallText: Only found 2 words.
